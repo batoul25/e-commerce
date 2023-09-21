@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +24,16 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh');
 
 });
+
+//Routes for the product
+Route::controller(ProductController::class)->group(function(){
+
+    Route::get('/products' , 'index') ;
+    Route::post('/products' ,  'store') -> middleware(['roles:admin']);
+    Route::get('/products/{id}' , 'show');
+    Route::post('/products/{id}' , 'update') -> middleware(['roles:admin']);
+    Route::post('/products/{id}' , 'destroy') -> middleware(['roles:admin']);
+
+})->middleware(['auth:api']);
+
+
