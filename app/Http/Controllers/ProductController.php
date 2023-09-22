@@ -40,8 +40,8 @@ class ProductController extends Controller
             'price' => $request -> price ,
             'quantity' => $request -> quantity ,
         ]);
-
-        return (new ProductResource ($product))->store($request);
+        return $this->successResponse(new ProductResource($product));
+        //return (new ProductResource ($product));
     }
 
     /**
