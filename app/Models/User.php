@@ -22,6 +22,8 @@ class User extends Authenticatable implements JWTSubject
         'role'
     ];
 
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -59,6 +61,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+    //The user can have only one cart(one to one relationship)
+    public function cart(){
+        return $this->hasOne(Cart::class);
     }
 
 }

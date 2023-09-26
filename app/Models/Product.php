@@ -11,4 +11,8 @@ class Product extends Model
 
     protected $fillable = ['name' , 'description' , 'price' , 'quantity'];
 
+    //The product can belongs to more than one cart(many to many realtionship)
+    public function carts(){
+        return $this->belongsToMany(Cart::class , 'cart_product' , 'cart_id' , 'product_id');
+    }
 }

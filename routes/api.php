@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,4 +44,12 @@ Route::controller(ProductController::class)->group(function(){
 
 })->middleware(['auth:api']);
 
+//Retrieve the user's shopping cart
+Route::get('/cart' ,[CartController::class , 'index'])->middleware('auth:api');
+
+//Add a product to the cart
+Route::post('/cart/add/{product_id}' , [CartController::class , 'addToCart'])->middleware('auth:api');
+
+//Remove a product from the cart
+Route::post('/cart/remove/{product_id}' , [CartController::class , 'removeFromCart'])->middleware('auth:api');
 
