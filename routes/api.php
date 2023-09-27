@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -52,4 +53,7 @@ Route::post('/cart/add/{product_id}' , [CartController::class , 'addToCart'])->m
 
 //Remove a product from the cart
 Route::post('/cart/remove/{product_id}' , [CartController::class , 'removeFromCart'])->middleware('auth:api');
+
+//Place an order for items in the cart
+Route::post('/orders/place' , [OrderController::class , 'placeOrder'])->middleware('auth:api');
 

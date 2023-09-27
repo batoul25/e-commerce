@@ -15,4 +15,10 @@ class Product extends Model
     public function carts(){
         return $this->belongsToMany(Cart::class , 'cart_product' , 'cart_id' , 'product_id');
     }
+
+
+    //The product can be associated with multiple orders(many to many realtionship)
+    public function orders(){
+        return $this->belongsToMany(Order::class);
+    }
 }

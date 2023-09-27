@@ -23,5 +23,10 @@ class Cart extends Model
         return $this->belongsTo(User::class);
     }
 
+    //each cart has one oder(one to one relationship)
+    public function order(){
+        return $this->hasOne(Order::class);
+    }
+
 
 }

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\helpers;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use function app\helpers\calculateTotalPrice;
 
 class CartController extends Controller
 {
@@ -25,17 +28,16 @@ class CartController extends Controller
         $cart = $user->cart;
 
         $products = [];
-        $totalPrice = 0;
+
 
         // Iterate over the products in the cart to bring additional info about products such as quantity
         foreach ($cart->products as $product) {
             $quantity = $product->pivot->quantity;
-            $price = $product->price;
-            $subTotal = $quantity * $price;
+
 
             $additionalData = [
                 'quantity' => $quantity,
-                'subtotal' => $subTotal
+
             ];
 
             // Return every product in the cart with its quantity and subtotal
@@ -45,7 +47,8 @@ class CartController extends Controller
             ];
 
             $products[] = $productData;
-            $totalPrice += $subTotal;
+            //use the helper function to calulate the toatl price of the products in the cart
+            $totalPrice = calculateTotalPrice($cart);
         }
 
         // Update the total_price column in the cart table
@@ -127,8 +130,11 @@ class CartController extends Controller
 
             // Update the quantity in the cart's pivot table
             $newQuantity = $existingProduct->pivot->quantity - $quantityToRemove;
+            if($newQuantity == 0){
+                $cart->detach($product->id);
+            }else{
             $cart->products()->updateExistingPivot($product->id, ['quantity' => $newQuantity]);
-
+            }
             // Update the quantity in the Product table
             $product->quantity += $quantityToRemove;
             $product->save();
