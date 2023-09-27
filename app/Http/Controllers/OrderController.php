@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function app\helpers\calculateTotalPrice;
+
+use function App\helpers\calculateTotalPrice;
 
 class OrderController extends Controller
 {
@@ -22,13 +25,13 @@ class OrderController extends Controller
     public function placeOrder(Request $request)
     {
         // Retrieve the authenticated user
-        $user = Auth::user();
+       $user = Auth::user();
 
         // Retrieve the user's cart
         $cart = $user->cart;
-
+//|| $cart->products->isEmpty()
         // Check if the cart is empty
-        if (!$cart || $cart->products->isEmpty()) {
+        if (!$cart || $cart->products->isEmpty() ){
             return $this->errorResponse('The cart is empty', 400);
         }
 
@@ -36,20 +39,28 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
+
+            // Calculate the total price of the cart
+            $totalPrice = calculateTotalPrice($cart);
+
             // Create a new order
 
             $order = Order::create([
                 'user_id'      => $user -> id ,
                 'order_date'   => now() -> format('Y-m-d'),
-                'total_amount' => calculateTotalPrice($cart) //use the helper to calculate the total price
+                'total_amount' => $totalPrice
 
             ]);
 
-            $products = $cart -> products();
+
+            $products = $cart->products;
+
+
             // Attach products to the order
-            foreach ($products as $product) {
+            foreach ($products as $product){
                 $quantity = $product->pivot->quantity;
                 $price = $product->price;
+
 
                 // Attach the product to the order with the quantity and price
                 $order->products()->attach($product->id, [
@@ -75,7 +86,8 @@ class OrderController extends Controller
             // Rollback the transaction in case of any error
             DB::rollBack();
 
-            return $this->errorResponse('Failed to place the order', 500);
+           // return $this->errorResponse('Failed to place the order', 500);
+          return $this->errorResponse('Failed to place the order: ' . $e->getMessage(), 500);
         }
     }
 }

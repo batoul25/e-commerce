@@ -13,11 +13,11 @@ class Product extends Model
 
     //The product can belongs to more than one cart(many to many realtionship)
     public function carts(){
-        return $this->belongsToMany(Cart::class , 'cart_product' , 'cart_id' , 'product_id');
+        return $this->belongsToMany(Cart::class);
     }
 
 
-    //The product can be associated with multiple orders(many to many realtionship)
+    //The product can be associated with multiple orders(many to many realtioship)
     public function orders(){
         return $this->belongsToMany(Order::class);
     }
