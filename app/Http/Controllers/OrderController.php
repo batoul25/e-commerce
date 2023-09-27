@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
 use App\Traits\ApiResponse;
+use App\Traits\Purchasable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ use function App\helpers\calculateTotalPrice;
 class OrderController extends Controller
 {
     use ApiResponse;
+    use Purchasable;
 
     /**
      * Place an order for the products in the user's cart.
@@ -40,7 +42,7 @@ class OrderController extends Controller
 
         try {
 
-            // Calculate the total price of the cart
+     /*       // Calculate the total price of the cart
             $totalPrice = calculateTotalPrice($cart);
 
             // Create a new order
@@ -51,7 +53,7 @@ class OrderController extends Controller
                 'total_amount' => $totalPrice
 
             ]);
-
+*/
 
             $products = $cart->products;
 
@@ -59,18 +61,15 @@ class OrderController extends Controller
             // Attach products to the order
             foreach ($products as $product){
                 $quantity = $product->pivot->quantity;
-                $price = $product->price;
 
+                // Purchase the product using the Purchasable trait
+                $order = $product->purchase($quantity);
 
-                // Attach the product to the order with the quantity and price
-                $order->products()->attach($product->id, [
-                    'quantity' => $quantity,
-                    'price' => $price,
-                ]);
+                if (!$order) {
+                    throw new \Exception('Failed to place the order for product ' . $product->id);
+                }
+            
 
-                // Update the product's quantity in the inventory
-                $product->quantity -= $quantity;
-                $product->save();
             }
 
             // Clear the user's cart
