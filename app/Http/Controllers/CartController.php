@@ -27,12 +27,15 @@ class CartController extends Controller
         $cart = $user->cart;
 
         $products = [];
-
-
+        $totalPrice = 0.0;
+        // dd($cart->products);
         // Iterate over the products in the cart to bring additional info about products such as quantity
         foreach ($cart->products as $product) {
             $quantity = $product->pivot->quantity;
+            // $price = $product->price;
+            // $subTotal = $quantity * $price;
 
+            // $totalPrice += $subTotal;
 
             $additionalData = [
                 'quantity' => $quantity,
@@ -46,7 +49,10 @@ class CartController extends Controller
             ];
 
             $products[] = $productData;
-            //use the helper function to calulate the toatl price of the products in the cart
+
+
+
+            // use the helper function to calulate the toatl price of the products in the cart
             $totalPrice = calculateTotalPrice($cart);
         }
 

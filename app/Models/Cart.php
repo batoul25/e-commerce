@@ -14,7 +14,7 @@ class Cart extends Model
     protected $primaryKey = 'id';
     //The cart can have more than one product(many to many realtionship)
     public function products(){
-        return $this->belongsToMany(Product::class , 'cart_product'  , 'id' ,'product_id')->withPivot('quantity');
+        return $this->belongsToMany(Product::class , 'cart_product'  , 'cart_id' ,'product_id')->withPivot('quantity');
     }
 
     //The cart belongs to only one user(one to one realtionship)

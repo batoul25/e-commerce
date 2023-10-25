@@ -31,7 +31,7 @@ class OrderController extends Controller
 
         // Retrieve the user's cart
         $cart = $user->cart;
-//|| $cart->products->isEmpty()
+
         // Check if the cart is empty
         if (!$cart || $cart->products->isEmpty() ){
             return $this->errorResponse('The cart is empty', 400);
@@ -42,7 +42,7 @@ class OrderController extends Controller
 
         try {
 
-     /*       // Calculate the total price of the cart
+            // Calculate the total price of the cart
             $totalPrice = calculateTotalPrice($cart);
 
             // Create a new order
@@ -53,7 +53,7 @@ class OrderController extends Controller
                 'total_amount' => $totalPrice
 
             ]);
-*/
+
 
             $products = $cart->products;
 
@@ -65,10 +65,10 @@ class OrderController extends Controller
                 // Purchase the product using the Purchasable trait
                 $order = $product->purchase($quantity);
 
-                if (!$order) {
-                    throw new \Exception('Failed to place the order for product ' . $product->id);
-                }
-            
+                // if (!$order) {
+                //     throw new \Exception('Failed to place the order for product ' . $product->id);
+                // }
+
 
             }
 

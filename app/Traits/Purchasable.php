@@ -52,9 +52,8 @@ trait Purchasable{
 
     public function isAvailable($quantity = 1)
     {
-        return $this->product >= $quantity;
+        return $this->quantity <= $quantity;
     }
-
 
     protected function updateInventory($quantity)
     {
